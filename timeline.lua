@@ -230,3 +230,89 @@ function timeline.newTimeline(duration)
 	},
 	true
 end
+
+--TODO:
+[[
+
+if love then --We are in love! (u gotcha?)
+	function tm.draw(self, x, y, w, h)
+		x = x or 0
+		y = y or 0
+		w = w or 800
+		h = h or 100
+		r, g, b, a = love.graphics.getColor()
+		if loveframes then
+			--TODO loveframes integration
+			return
+		else
+			love.graphics.setColor(0.5, 0.5, 0.5, 0.9)
+			love.graphics.rectangle('fill', x, y, w, h, w/32, h/16)
+			love.graphics.setColor(1, 1, 1, 1)
+			love.graphics.line(0 + x, ( h / 3 ) + y, w + x, ( h / 3 ) + y)
+			love.graphics.circle('fill', ((( self.clock / self.duration ) * w ) + 5 ) + x, ( h / 3 ) + y, 5)
+			local empty = 0
+			local dead = 0
+			local alive = 0
+			local text = 'State of the objects in this point:\n'
+			for i,v in ipairs(self.eventList) do
+				print(i,v.state)
+				if v.state == 'empty' then
+					empty = empty + 1
+				end
+				if v.state == 'dead' then
+					dead = dead + 1
+				end
+				if v.state == 'alive' then
+					alive = alive + 1
+				end
+			end
+			text = text..'Running: '..alive..'\tWaiting: '..empty..'\tKilled: '..dead
+			love.graphics.print(text, ((( self.clock / self.duration ) * w ) + 5 ) + x, ( h / 3 ) + 14 + y )
+			love.graphics.setColor(r, g, b, a)
+		end
+	end
+	function tm.attachSource(self, source)
+		if self.source then
+			self.clock = 0
+			if self.source.stop then
+				self.source.stop()
+			end
+		end
+		if type(source) == text then
+			self.source = love.audio.newSource(source, stream)
+		end
+		function self.play(self)
+			self.soucre:play = self.source.play
+		end
+		function self.stop(self)
+			self.source:stop = self.source.stop
+		end
+		function self.rewind(self)
+			self.source:rewind = self.source.rewind
+		end
+		function self.seek(self)
+			self.source:seek = self.source.seek
+		end
+		function self.tell(self)
+			self.source:tell = self.source.tell
+		end
+	end
+	function tm.detachSource(self)
+		self.play   = nil
+		self.stop   = nil
+		self.rewind = nil
+		self.seek   = nil
+		self.tell   = nil
+	end
+end
+
+if not love then --They don't love us :(
+	print("[TIMELINE][WARNING]: The interpreter don\'t love us, Because of that some features are disabled")
+	print("[TIMELINE]           if you are running LÖVE2D and this seems odd,")
+	print("[TIMELINE]           make sure if this is not the main thread do require('love') at the top of the")
+	print("[TIMELINE]           script, if is not the case sadly this features are too dependent to LÖVE2D's")
+	print("[TIMELINE]           framework and for stability gets disabled, if you are too dissapointed, the")
+	print("[TIMELINE]           LÖVE2D's framework is strongly recomended to use.")
+end]]
+
+return timeline
